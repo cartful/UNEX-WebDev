@@ -1,0 +1,106 @@
+
+			div.container {
+    			width: 100%;
+    			border: 2px solid gray;
+			}
+
+			header, footer {
+    			padding: 2em;
+    			color: white;
+    			background-color: #6666ff;
+    			clear: left;
+    			text-align: center;
+			}
+
+			nav {
+    			float: left;
+    			max-width: 160px;
+    			margin: 0;
+    			padding: 1em;
+			}
+
+			nav ul {
+    			list-style-type: none;
+    			padding: 0;
+			}
+   
+			nav ul a {
+   		 		text-decoration: none;
+			}
+
+			article {
+    			margin-left: 100px;
+    			border-left: 1px solid gray;
+    			padding: 1em;
+    			overflow: hidden;
+    			font-family: "Ek Mukta";
+			}
+
+
+			
+			.img1 {
+				float: right;
+				width:180px;
+				height:100%;
+			}
+
+			.clearfix::after {
+    			content: "";
+    			clear: both;
+    			display: table;
+			}
+
+			@media only screen and (max-width: 500px) {
+				div.container {
+	    			width: 100%;
+	    			border: 2px solid gray;
+				}
+
+				header, footer {
+	    			padding: 2em;
+	    			color: white;
+	    			background-color: #6666ff;
+	    			clear: left;
+	    			text-align: center;
+				}
+
+				nav {
+					float: left;
+	    			width: 100%;
+	    			margin: 0;
+	    			padding: 1%;
+				}
+
+				nav ul {
+	    			list-style-type: none;
+	    			padding: 0;
+				}
+	   
+				nav ul a {
+					font-family: "Ek Mukta";
+					margin: 1%;
+					padding: 1%;
+	   		 		text-decoration: none;
+				}
+
+				article {
+					width: 100%;
+	    			margin-left: 1%;
+	    			padding: 1%;
+	    			overflow: hidden;
+				}
+				
+				.img1 {
+					width:100%;
+					height:200px;
+				}
+
+				.clearfix::after {
+	    			content: "";
+	    			clear: both;
+	    			display: table;
+				}
+			}
+
+
+		
