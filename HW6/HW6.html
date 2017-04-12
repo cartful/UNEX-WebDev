@@ -1,0 +1,206 @@
+
+<html>
+    <head>
+        <title> Shopping cart Page </title>
+        <link rel="stylesheet" type="text/css" href="purchase.css">
+        <script type="text/javascript" src="date.js"></script>
+        <style>
+            .lineItems {
+                text-align: center;
+                width: 50%;
+            
+            }
+
+            .item {
+                text-align: center;
+                min-width: 120px;
+                min-height: 200px;
+                font-size: 15pt;
+            }
+
+            .itemLineStyle {
+                display: table-row;
+            }
+
+            .itemStyle {
+                display: table-cell;
+                padding-right: 100px;
+                padding-bottom: 20px;
+                text-align: left;
+                border-bottom: 1px solid lightgray;
+            }
+
+            .subTotal, .resetLineItem {
+                width: 620px;
+                padding-bottom: 20px;
+                text-align: right;
+                font-size: 20pt;
+                font-weight: bold;
+            }
+
+            .tax, .shipping{
+                width: 620px;
+                padding-bottom: 2px;
+                text-align: right;
+                font-size: 15pt;
+            }
+
+            .checkoutButton {
+                font-size: 18pt;
+            }
+
+            button {
+                font-size: 12pt;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="cart" class="lineItems">
+            <h1>Shopping Cart</h1>
+            <div id="item" class="item">item</div>
+            <div class="tax">Tax (10%): <span id="tax">temp value</span></div>
+            <div class="shipping">Shipping: <span id="shipping">temp value</span></div>
+            <div class="subTotal">Subtotal: <span id="subTotal">temp value</span></div>
+            <div class="resetLineItem"><button type="button" onclick="resetLineItem()">Reset</button></div>
+        </div>
+        <br>
+        <div>
+            <form id="customerInfoForm" action="http://holub.com/echo.php" method="post">
+                Name: <input id="customerName" type="text" name="customerName" size="20"><br>
+                Address: <input id="address" type="text" name="address" size="40"><br>
+                CreditcardNumber: <input id="cardNum" type="number" name="cardNum" size="35"><br>
+                expirationDate: <input id="epDate" type="date" name="epDate" size="20"><br>
+                <br>
+                <input class="checkoutButton" type="submit"; value="Check out";>
+            </form>
+            <button type="button" onclick="Autofill()">Autofill</button>
+            <button type="button" onclick="resetInfo()">Reset</button>
+        </div>
+        
+    </body>
+</html>
+
+<script>
+
+function get(url) {
+    return new Promise( function(resolve, reject) {
+        var req = new XMLHttpRequest();
+        req.onload = function() {
+            resolve(req.response);
+        }
+        req.onerror = function() {
+            reject( Error("What went wrong") );
+        }
+        req.open ("POST", url);
+        req.send();
+    })
+}
+
+var myOrder;
+
+function getmyorder() {
+    get("order.json").then(
+        function(response) {
+            var orderInfo = JSON.parse(response);
+            myOrder = new Order(orderInfo.customer, orderInfo.lineItems);
+            myOrder.cal_subtotal();
+            myOrder.display();
+            document.getElementById("page").style = "display:none;";
+            document.getElementById("cartpage").style = null;
+        }
+        function(error) { console.log("Failed" + error.message); }
+    )
+    .catch(
+        function(reason) {
+            console.log('Handle rejected promise ('+reason+') here.');
+        });
+}
+
+function turndiv ( str ) {
+    str = '<div class="itemStyle">' + str + '</div>';
+    return str;
+}
+
+function turndiv_perline ( str, idName ) {
+    str = '<div id="' + idName + '" class="itemLineStyle">' + str + '</div>';
+    return str
+}
+
+
+var objList = order.lineItems.slice(0);
+
+function display (objList) {
+    var codeItems = "";
+    codeItems += turndiv( "<b>Name</b>" );
+    codeItems += turndiv( "<b>Price($)</b>" );
+    codeItems += turndiv( "<b>Quantity</b>" );
+    codeItems = turndiv_perline(codeItems, "caption");
+    
+    for(var i = 0; i < objList.length; i++) {
+        var name = objList[i].Name;
+        var price = objList[i].Price;
+        var qty = objList[i].Qty;
+        var temp = "";
+        temp += turndiv( name );
+        temp += turndiv( price );
+        temp += turndiv( qty );
+        temp = temp + '<button type="button" onclick="deleteItem(' + String(i + 1) + ')">Delete</button>';
+        codeItems += turndiv_perline( temp, "item" + String(i + 1) );
+    } 
+    document.getElementById("item").innerHTML = codeItems;
+}
+
+function deleteItem ( itemID ) {
+    for (var i=0; i<myOrder.lineItems.length; i++) {
+        if (myOrder.lineItems[i].itemID == itemDivID.id) {
+            myOrder.lineItems[i].delete_this_item(); 
+        } else { continue; }
+    }
+    display (objList);
+    getSubtotal (objList);
+    
+}
+
+function getSubtotal (objList) {
+    var totalWithoutTax = 0;
+    var tax = 0;
+    var shipping = 5;
+    for (i = 0; i < objList.length; i++) {
+        totalWithoutTax += objList[i].Price * objList[i].Qty;
+    }
+    tax = totalWithoutTax * 0.1;
+    if (totalWithoutTax == 0) {
+        shipping = 0;
+    }
+    document.getElementById("tax").innerHTML = tax;
+    document.getElementById("shipping").innerHTML = shipping;
+    document.getElementById("subTotal").innerHTML = totalWithoutTax + tax + shipping;
+    location.reload;    
+}
+
+function resetLineItem () {
+    objList = order.lineItems.slice(0);
+    display (objList);
+    getSubtotal(objList);
+    location.reload;
+}
+
+function Autofill () {
+    document.getElementById("customerName").value = order.customerInfo.Name;
+    document.getElementById("address").value = order.customerInfo.Address;
+    document.getElementById("cardNum").value = order.customerInfo.cardNumber;
+    document.getElementById("epDate").value = Date.parse(order.customerInfo.expirationDate);
+    location.reload;
+}
+
+function resetInfo () {
+    document.getElementById("customerInfoForm").reset();
+    location.reload;
+}
+
+window.onload = function () {
+    display (objList);
+    getSubtotal(objList);
+    document.getElementById("customerInfoForm").reset();
+}
+</script>

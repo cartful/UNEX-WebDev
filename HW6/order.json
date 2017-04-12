@@ -1,0 +1,40 @@
+{
+    "lineItems" :[
+        {   
+            "Name" : "Yixuan",
+            "Price" : 70,
+            "Qty" : 1
+        },
+        {
+            "Name" : "Shijie", 
+            "Price" : 28,
+            "Qty" : 90
+        },
+        {
+            "Name" : "Kunyu",
+            "Price" : 89,
+            "Qty" : 33
+        },
+        {
+            "Name" : "Jingyu",
+            "Price" : 65,
+            "Qty" : 12
+        },
+        {
+            "Name" : "Yuan",
+            "Price" : 69,
+            "Qty" : 11
+        },
+        {
+            "Name" : "Gongbo",
+            "Price" : 63,
+            "Qty" : 22
+        }
+    ],
+    "customerInfo" : {
+        "Name": "Yixuan He",
+        "Address": "2328 Rose Street, Berkeley",
+        "cardNumber": 13910733521,
+        "expirationDate": "1995-05-23"
+    }
+}   
